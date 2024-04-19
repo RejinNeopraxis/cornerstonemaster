@@ -23,8 +23,36 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
 
+    - name: Install Stencil CLI Dependency
+      run: npm install -g @bigcommerce/stencil-cli
+
+    - name: Install Dependencies
+      run: npm ci
+
+    # Connect to store and build Stencil theme as before...
+
+    - name: Connect to store
+      env:
+        URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
+        TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
+      run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
+
+    - name: Build Stencil theme
+      run: stencil bundle
+
+    - name: Create archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: stencil-bundle
+        path: /home/runner/work/cornerstonemaster/cornerstonemaster/*.zip
+
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: pwd
+      run: mv /home/runner/work/cornerstonemaster/cornerstonemaster/*.zip
 
-   
+    # Commit and push changes
+    - name: Commit and push changes
+      run: |
+        git add .
+        git commit -m "Add generated stencil bundle"
+        git push
