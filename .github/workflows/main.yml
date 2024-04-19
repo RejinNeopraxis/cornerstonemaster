@@ -48,7 +48,7 @@ jobs:
 
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: mv public/dist/*.zip .
+      run: mv /*.zip .
 
     # Commit and push changes
     - name: Commit and push changes
