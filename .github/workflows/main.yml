@@ -48,7 +48,7 @@ jobs:
 
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: git add $GITHUB_WORKSPACE/*.zip
+      run: git add -f $GITHUB_WORKSPACE/*.zip
 
     # Commit and push changes
     - name: Commit and push changes
