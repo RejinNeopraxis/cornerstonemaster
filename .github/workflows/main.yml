@@ -53,5 +53,7 @@ jobs:
     # Commit and push changes
     - name: Commit and push changes
       run: |
+        git config --global user.email "rejin.or@neopraxis.in"
+        git config --global user.name "RejinNeopraxis"
         git commit -m "Add generated stencil bundle"
         git push
