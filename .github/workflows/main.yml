@@ -48,6 +48,6 @@ jobs:
 
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: ls
+      run: pwd
 
    
