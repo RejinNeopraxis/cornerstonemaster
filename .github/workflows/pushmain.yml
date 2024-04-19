@@ -3,7 +3,7 @@ name: Deploy Stencil Theme to Store
 on:
   workflow_dispatch:  # Manual trigger
   push:
-    branches: [ testflow ]  # Trigger on pushes to the develop branch
+    branches: [ develop ]  # Trigger on pushes to the develop branch
 
 jobs:
   build-and-upload:
@@ -26,12 +26,21 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build Stencil theme (assuming pre-built zip exists)
-        # No bundling step here, assuming the zip is already available
+      # Remove this step if building is not done here
+      #- name: Build Stencil theme (assuming pre-built zip exists)
+      #  # No bundling step here, assuming the zip is already available
 
-      - name: Create archive (skip if zip already exists)
-        # No upload action here, assuming the zip is already available
-        # You can optionally add a check to confirm the existence of the zip file
+      # Add a check for pre-built zip and upload conditionally (optional)
+      - name: Upload pre-built zip (if exists)
+        run: |
+          if [[ -f public/dist/*.zip ]]; then
+            echo "Uploading pre-built zip..."
+            uses: actions/upload-artifact@v2
+            with:
+              name: stencil-bundle
+              path: public/dist/*.zip
+          fi
+        shell: bash
 
   deploy-to-store:
     runs-on: ubuntu-latest  # Consider using the same runner for efficiency
@@ -50,4 +59,3 @@ jobs:
         # Assuming the zip file is downloaded in the previous step (if building in first job)
         run: stencil push -a -d -c 1
           ${{ runner.temp_dir }}/stencil-bundle.zip  # Download location (if building in first job)
-
