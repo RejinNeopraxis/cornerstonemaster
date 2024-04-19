@@ -48,11 +48,10 @@ jobs:
 
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: mv $GITHUB_WORKSPACE/*.zip
+      run: git add $GITHUB_WORKSPACE/*.zip
 
     # Commit and push changes
     - name: Commit and push changes
       run: |
-        git add .
         git commit -m "Add generated stencil bundle"
         git push
