@@ -1,6 +1,8 @@
-name: Build Stencil Theme
+# Deploy Theme to Store when new changes are pushed to master branch
+name: Deploy Theme to Store
 
 on:
+  workflow_dispatch:
   push:
     branches: [ develop ]
 
@@ -8,22 +10,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node: [16.x]
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: ${{ matrix.node }}
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install Stencil CLI Dependency
+      run: npm install -g @bigcommerce/stencil-cli
 
-      - name: Build Stencil theme
-        run: stencil bundle
+    - name: Install Dependencies
+      run: npm ci
 
-      - name: Create archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: stencil-bundle
-          path: public/dist/*.zip
+#
+# You must configure store credentials as secrets on your GitHub repo for automatic deployment via GitHub Actions
+# This defaults to pushing the theme to channel ID 1, which is the default storefront. If you wish to push to an
+# Alternate storefront, use a different channel ID
+#
+
+    - name: Connect to store
+      env:
+        URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
+        TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
+      run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
+      
+    - name: Build Stencil theme
+      run: stencil bundle
+
+    - name: Create archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: stencil-bundle
+        path: public/dist/*.zip
