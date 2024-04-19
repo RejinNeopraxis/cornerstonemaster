@@ -48,4 +48,4 @@ jobs:
         BIGCOMMERCE_STORE: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
         BIGCOMMERCE_TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
         THEME_ZIP_FILE: $GITHUB_WORKSPACE/*.zip
-      run: bc theme push --file $THEME_ZIP_FILE
+      run: stencil push --file $THEME_ZIP_FILE
