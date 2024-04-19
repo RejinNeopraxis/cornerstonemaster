@@ -3,7 +3,7 @@ name: Deploy Stencil Theme to Store
 on:
   workflow_dispatch:  # Manual trigger
   push:
-    branches: [ develop ]  # Trigger on pushes to the develop branch
+    branches: [ testflow ]  # Trigger on pushes to the develop branch
 
 jobs:
   build-and-upload:
