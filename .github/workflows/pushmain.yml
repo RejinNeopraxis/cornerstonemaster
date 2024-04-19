@@ -3,7 +3,7 @@ name: Deploy Stencil Theme to Store
 on:
   workflow_dispatch:  # Manual trigger
   push:
-    branches: [ develop ]  # Trigger on pushes to the develop branch
+    branches: [ testflow ]  # Trigger on pushes to the develop branch
 
 jobs:
   build-and-upload:
@@ -20,41 +20,34 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install Stencil CLI Dependency
+      - name: Install Stencil CLI Dependency (optional, if not already installed)
         run: npm install -g @bigcommerce/stencil-cli
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Connect to Store (Avoid hardcoding secrets)
-        # Use dedicated job for authentication to avoid exposing secrets in build logs
-        uses: ./authenticate-store.yml  # Reference a separate workflow file
+      - name: Build Stencil theme (assuming pre-built zip exists)
+        # No bundling step here, assuming the zip is already available
 
-      - name: Build Stencil theme
-        run: stencil bundle
-
-      - name: Create archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: stencil-bundle
-          path: public/dist/*.zip
+      - name: Create archive (skip if zip already exists)
+        # No upload action here, assuming the zip is already available
+        # You can optionally add a check to confirm the existence of the zip file
 
   deploy-to-store:
     runs-on: ubuntu-latest  # Consider using the same runner for efficiency
-    needs: build-and-upload  # Wait for the build job to complete
+    needs: build-and-upload  # Wait for the build job to complete (optional)
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download artifact
+      - name: Download artifact (if building in first job)
         uses: actions/download-artifact@v2
         with:
-          name: stencil-bundle
+          name: stencil-bundle  # Optional, if building in first job
+          path: ${{ runner.temp_dir }}/stencil-bundle.zip  # Optional, if building in first job
 
-      - name: Push Stencil theme (Avoid hardcoding secrets)
-        # Use dedicated job for authentication to avoid exposing secrets in build logs
-        uses: ./authenticate-store.yml  # Reference the same authentication workflow
-        env:
-          # Provide environment variables for deployment within the authentication job
-          ARTIFACT_PATH: ${{ runner.temp_dir }}/stencil-bundle.zip  # Download location
+      - name: Push theme live, automatically deleting oldest theme if necessary
+        # Assuming the zip file is downloaded in the previous step (if building in first job)
+        run: stencil push -a -d -c 1
+          ${{ runner.temp_dir }}/stencil-bundle.zip  # Download location (if building in first job)
 
