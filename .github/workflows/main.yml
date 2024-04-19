@@ -20,7 +20,7 @@ jobs:
         run: npm install
 
       - name: Build Stencil theme
-        run: npm run bundle
+        run: stencil bundle
 
       - name: Create archive
         uses: actions/upload-artifact@v2
