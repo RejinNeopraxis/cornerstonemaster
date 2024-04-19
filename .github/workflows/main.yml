@@ -2,7 +2,7 @@ name: Build Stencil Theme
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   build:
