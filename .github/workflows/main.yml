@@ -44,11 +44,11 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: stencil-bundle
-        path: /home/runner/work/cornerstonemaster/cornerstonemaster/*.zip
+        path: $GITHUB_WORKSPACE/*.zip
 
     # Move the generated zip file to the root directory
     - name: Move zip file to root directory
-      run: mv /home/runner/work/cornerstonemaster/cornerstonemaster/*.zip
+      run: mv $GITHUB_WORKSPACE/*.zip
 
     # Commit and push changes
     - name: Commit and push changes
