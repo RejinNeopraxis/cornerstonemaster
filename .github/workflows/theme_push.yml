@@ -44,8 +44,8 @@ jobs:
 #
     - name: Connect to store
       env:
-        URL: ${{ secrets.STENCIL_STORE_URL_SANDBOX }}
-        TOKEN: ${{ secrets.STENCIL_ACCESS_TOKEN_SANDBOX }}
+        URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
+        TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
       run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
 
     - name: Deploy theme to BigCommerce
