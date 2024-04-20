@@ -3,7 +3,7 @@ name: Deploy Theme to Store
 
 on:
   push:
-    branches: [ develop ]  # Trigger on pushes to the master branch
+    branches: [ master ]  # Trigger on pushes to the master branch
 
 jobs:
   build-and-deploy:
@@ -71,4 +71,3 @@ jobs:
 
           # Or, use the locally built zip file
           stencil push $GITHUB_WORKSPACE/*.zip
-
