@@ -4,7 +4,7 @@ name: Deploy Theme to Store
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ develop ]
 
 jobs:
   build:
