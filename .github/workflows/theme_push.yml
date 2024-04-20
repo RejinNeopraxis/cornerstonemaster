@@ -2,55 +2,73 @@
 name: Deploy Theme to Store
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ develop ]
+    branches: [ develop ]  # Trigger on pushes to the master branch
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node: [18.x]
+        node: [18.x]  # Test with Node.js version 18.x
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3  # Checkout code
 
-    - name: Use Node.js ${{ matrix.node }}
-      uses: actions/setup-node@v2-beta
-      with:
-        node-version: ${{ matrix.node }}
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
 
-    - name: npm cache
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Install Stencil CLI Dependency
-      run: npm install -g @bigcommerce/stencil-cli
+      - name: Install Stencil CLI Dependency
+        run: npm install -g @bigcommerce/stencil-cli
 
-    - name: Install Dependencies
-      run: npm ci
+      - name: Install Dependencies
+        run: npm ci  # Cache and install dependencies
 
-#
-# You must configure store credentials as secrets on your GitHub repo for automatic deployment via GitHub Actions
-# This defaults to pushing the theme to channel ID 1, which is the default storefront. If you wish to push to an
-# Alternate storefront, use a different channel ID
+      - name: Create Secrets Environment Variables (Optional)
+        # Uncomment and replace placeholders if not using repository secrets
+        # run: |
+        #   echo "BIGCOMMERCE_STORE_API_URL=your_store_url" >> $GITHUB_ENV
+        #   echo "BIGCOMMERCE_STORE_API_TOKEN=your_access_token" >> $GITHUB_ENV
 
-
-    - name: connect theme
-      env:
+      - name: Connect to Store (Using Secrets)
+        env:
           URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
           TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
-      run: |
-          # Use `stencil push` to deploy the theme
-          stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
-       
-    - name: Deploy theme
-      run: |
+        run: |
+          # Use `stencil init` for initial setup (if needed)
+          # stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
+
+          # Connect to store
+          stencil connect -u $URL -t $TOKEN
+
+      - name: Build Theme
+        run: npm run build  # Assuming you have a build script to create a theme zip
+
+      - name: Upload Theme Artifact (Optional)
+        uses: actions/upload-artifact@v3
+        with:
+          name: theme-zip
+          path: $GITHUB_WORKSPACE/*.zip
+
+      - name: Deploy Theme to Store
+        env:
+          URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
+          TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
+        run: |
+          # Download the uploaded theme zip (if using artifact)
+          # wget https://artifacts.githubusercontent.com/<your-username>/<your-repo>/workflows/<workflow-id>/<artifact-container-id>/theme-zip.zip
+
+          # Or, use the locally built zip file
           stencil push $GITHUB_WORKSPACE/*.zip
+
