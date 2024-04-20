@@ -48,9 +48,5 @@ jobs:
           STENCIL_STORE_URL: ${{ secrets.STENCIL_STORE_URL }}
           STENCIL_ACCESS_TOKEN: ${{ secrets.STENCIL_ACCESS_TOKEN }}
       run: |
-         
-          # Unzip the theme
-          unzip $GITHUB_WORKSPACE/*.zip
-
           # Use `stencil push` to deploy the theme
-          stencil push
+          stencil push $GITHUB_WORKSPACE/*.zip
