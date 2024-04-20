@@ -41,15 +41,11 @@ jobs:
 # You must configure store credentials as secrets on your GitHub repo for automatic deployment via GitHub Actions
 # This defaults to pushing the theme to channel ID 1, which is the default storefront. If you wish to push to an
 # Alternate storefront, use a different channel ID
-#
-    - name: Connect to store
+
+
+    - name: Deploy theme to BigCommerce
       env:
         URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
         TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
       run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
-
-    - name: Deploy theme to BigCommerce
-      env:
-        BIGCOMMERCE_STORE: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
-        BIGCOMMERCE_TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
-      run: stencil push --file $GITHUB_WORKSPACE/*.zip
+           stencil push --file $GITHUB_WORKSPACE/*.zip
