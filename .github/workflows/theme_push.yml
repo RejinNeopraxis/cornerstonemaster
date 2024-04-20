@@ -51,8 +51,8 @@ jobs:
     - name: Fetch Zip file
       run: |
             # Assuming your Zip file name is theme.zip
-            mv theme.zip $GITHUB_WORKSPACE/theme.zip
+            mv theme.zip $GITHUB_WORKSPACE/*.zip
     - name: Deploy theme to BigCommerce
       env:
         THEME_ZIP_FILE: $GITHUB_WORKSPACE/*.zip
-      run: stencil push --file $GITHUB_WORKSPACE/theme.zip
+      run: stencil push --file $GITHUB_WORKSPACE/*.zip
