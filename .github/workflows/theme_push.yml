@@ -49,4 +49,7 @@ jobs:
       run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
 
     - name: Deploy theme to BigCommerce
+      env:
+        BIGCOMMERCE_STORE: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
+        BIGCOMMERCE_TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
       run: stencil push --file $GITHUB_WORKSPACE/*.zip
