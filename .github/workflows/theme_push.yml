@@ -52,4 +52,4 @@ jobs:
 
     - name: Deploy theme to BigCommerce
       run: |
-           stencil push --file $GITHUB_WORKSPACE/*.zip
+           stencil push -a -d -c 1 --file $GITHUB_WORKSPACE/*.zip
