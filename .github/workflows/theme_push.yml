@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [16.x]
+        node: [18.x]
 
     steps:
     - name: Checkout code
@@ -49,6 +49,4 @@ jobs:
       run: stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
 
     - name: Deploy theme to BigCommerce
-      env:
-        THEME_ZIP_FILE: $GITHUB_WORKSPACE/*.zip
       run: stencil push --file $GITHUB_WORKSPACE/*.zip
