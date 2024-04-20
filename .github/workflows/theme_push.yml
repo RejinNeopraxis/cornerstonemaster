@@ -53,4 +53,4 @@ jobs:
        
     - name: Deploy theme
       run: |
-          stencil push $GITHUB_WORKSPACE/*.zip
+          stencil push --file $GITHUB_WORKSPACE/*.zip
