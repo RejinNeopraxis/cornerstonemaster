@@ -51,3 +51,7 @@ jobs:
           # Use `stencil push` to deploy the theme
           stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
           stencil push $GITHUB_WORKSPACE/*.zip
+
+    - name: Deploy theme
+      run: |
+          stencil push $GITHUB_WORKSPACE/*.zip
