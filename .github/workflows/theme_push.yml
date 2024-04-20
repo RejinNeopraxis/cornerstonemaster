@@ -43,13 +43,14 @@ jobs:
 # Alternate storefront, use a different channel ID
 
 
-    - name: Deploy theme to BigCommerce
+    - name: Deploy theme
       env:
-        URL: ${{ secrets.BIGCOMMERCE_STORE_API_URL }}
-        TOKEN: ${{ secrets.BIGCOMMERCE_STORE_API_TOKEN }}
+          STENCIL_STORE_URL: ${{ secrets.STENCIL_STORE_URL }}
+          STENCIL_ACCESS_TOKEN: ${{ secrets.STENCIL_ACCESS_TOKEN }}
       run: |
-           stencil init -u $URL -t $TOKEN -p 3000 -h https://api.bigcommerce.com
+         
+          # Unzip the theme
+          unzip $GITHUB_WORKSPACE/*.zip
 
-    - name: Deploy theme to BigCommerce
-      run: |
-           stencil push -a -d -c 1 --file $GITHUB_WORKSPACE/*.zip
+          # Use `stencil push` to deploy the theme
+          stencil push
